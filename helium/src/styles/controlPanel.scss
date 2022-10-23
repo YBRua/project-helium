@@ -1,0 +1,27 @@
+.control-panel {
+  &--button-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  &--button {
+    border: 1px solid var(--slate-300);
+    background-color: #FFFFFF;
+
+    flex-grow: 1;
+    height: 2rem;
+
+    font-size: 1rem;
+
+    &:hover {
+      background-color: var(--slate-100);
+      cursor: pointer;
+    }
+
+    &:active {
+      background-color: var(--slate-200);
+    }
+  }
+}

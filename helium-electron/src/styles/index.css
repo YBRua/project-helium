@@ -1,0 +1,80 @@
+:root {
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+
+  --blue-100: #dbeafe;
+  --blue-200: #bfdbfe;
+  --blue-300: #93c5fd;
+  --blue-400: #60a5fa;
+
+  --sky-100: #e0f2fe;
+  --sky-200: #bae6fd;
+
+  --red-100: #fee2e2;
+  --red-200: #fecaca;
+
+  --nimo-navbar-bg: #324157;
+  --nimo-navbar-hover: #283446;
+  --nimo-navbar-active: #1f2635;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  margin: auto;
+  width: 100%;
+  height: 85vh;
+  background-color: white;
+}
+
+.app-body {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.navbar-container {
+  width: 100%;
+  height: 80px;
+
+  margin: 0;
+  color: rgb(191, 203, 217);
+  background-color: var(--nimo-navbar-bg);
+}
+
+.persons-container {
+  max-height: 70vh;
+  overflow-y: scroll;
+  padding: 1rem 0;
+  border-top: 2px solid var(--slate-300);
+  border-bottom: 2px solid var(--slate-300);
+}
+
+.persons-container::-webkit-scrollbar { 
+  display: none;  /* Safari and Chrome */
+}
+
+.timetable-container {
+  width: 75%;
+  height: 80vh;
+  background-color: #FFFFFF;
+  padding: 1rem 1rem;
+  overflow-y: scroll;
+}
+
+.timetable-container::-webkit-scrollbar { 
+  display: none;  /* Safari and Chrome */
+}
+
+.rhs-panels {
+  width: 25%;
+  padding: 1rem 1rem;
+}
+
+.control-panel-container {
+  width: 100%;
+  padding: 1rem 0rem;
+}
