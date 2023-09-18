@@ -3,20 +3,20 @@ import { ITimeSlot } from "../../interfaces/timeslots";
 import { TableItemEntry } from "./tableItemEntry";
 
 export function TableItem(props: {
+  currentTimeSlot: ITimeSlot;
   persons: string[];
   isAssignable: boolean;
   onCellClick: () => void;
 
-  assigned: Map<string, ITimeSlot>;
-  removeAssigned: (person: string) => void;
+  assigned: Map<string, ITimeSlot[]>;
+  removeAssigned: (person: string, timeSlot: ITimeSlot) => void;
 
   removePersonAt: (row: number, col: number, person: string) => void;
 
   selectedPerson: string;
   setSelected: (person: string) => void;
 }) {
-
-  const { persons, isAssignable, onCellClick } = props;
+  const { currentTimeSlot, persons, isAssignable, onCellClick } = props;
   const { assigned, removeAssigned, removePersonAt } = props;
   const { selectedPerson, setSelected } = props;
 
@@ -31,10 +31,14 @@ export function TableItem(props: {
           setSelected(person);
         };
         const onEntryRemove = () => {
-          const timeSlot = assigned.get(person);
-          if (timeSlot) {
-            removePersonAt(timeSlot.time, timeSlot.weekday, person);
-            removeAssigned(person);
+          const timeSlots = assigned.get(person);
+          if (timeSlots) {
+            removePersonAt(
+              currentTimeSlot.time,
+              currentTimeSlot.weekday,
+              person
+            );
+            removeAssigned(person, currentTimeSlot);
             setSelected("");
           }
         };

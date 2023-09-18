@@ -13,9 +13,9 @@ export function TimeTable(props: {
   rowSubHeaders: string[];
   rowData: string[][][];
 
-  assigned: Map<string, ITimeSlot>;
+  assigned: Map<string, ITimeSlot[]>;
   addAssigned: (person: string, timeSlot: ITimeSlot) => void;
-  removeAssigned: (person: string) => void;
+  removeAssigned: (person: string, timeslots: ITimeSlot) => void;
 
   timeSlots: Map<string, ITimeSlot[]>;
   addPersonAt: (row: number, col: number, person: string) => void;
@@ -23,6 +23,8 @@ export function TimeTable(props: {
 
   selectedPerson: string; // person name
   setSelectedPerson: (person: string) => void;
+
+  enableDuplicate: Map<string, boolean>;
 }) {
   const {
     columnHeaders,
@@ -31,6 +33,7 @@ export function TimeTable(props: {
     rowData,
     timeSlots,
     selectedPerson,
+    enableDuplicate,
   } = props;
   const { assigned, addAssigned, removeAssigned } = props;
   const { addPersonAt, removePersonAt } = props;
@@ -108,24 +111,33 @@ export function TimeTable(props: {
                       // handle clicks on a (assignable) timetable cell
                       // if cell is assignable, add person to cell
                       if (isAssignable) {
-                        if (assigned.has(selectedPerson)) {
-                          // if person is already assigned
-                          // remove person from previous time slot
-                          const slot = assigned.get(selectedPerson)!;
-                          if (
-                            slot.weekday === colIdx &&
-                            slot.time === _getRowId(rowIdx, subRowIdx)
-                          ) {
-                            // do nothing if we are clicking on the same cell
-                            setSelected("");
-                            return;
+                        if (assigned.get(selectedPerson)?.length ?? 0 > 0) {
+                          const slots = assigned.get(selectedPerson)!;
+                          for (const slot of slots) {
+                            // do nothing if the person has been assigned to the cell
+                            if (
+                              slot.weekday === colIdx &&
+                              slot.time === _getRowId(rowIdx, subRowIdx)
+                            ) {
+                              setSelected("");
+                              return;
+                            }
                           }
-                          removePersonAt(
-                            slot.time,
-                            slot.weekday,
-                            selectedPerson
-                          );
-                          removeAssigned(selectedPerson);
+
+                          // if the person could only be assigned once,
+                          // move it from the previous cell to the newly selected cell.
+                          const isDuplicateEnabled =
+                            enableDuplicate.get(selectedPerson) ?? false;
+                          if (!isDuplicateEnabled) {
+                            for (const slot of slots) {
+                              removePersonAt(
+                                slot.time,
+                                slot.weekday,
+                                selectedPerson
+                              );
+                              removeAssigned(selectedPerson, slot);
+                            }
+                          }
                         }
 
                         // add person to new time slot
@@ -145,6 +157,10 @@ export function TimeTable(props: {
                     return (
                       <TableItem
                         key={colIdx}
+                        currentTimeSlot={{
+                          weekday: colIdx,
+                          time: _getRowId(rowIdx, subRowIdx),
+                        }}
                         persons={persons}
                         isAssignable={isAssignable}
                         onCellClick={onCellClick}

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useAssignedPerson } from "./hooks/useAssignedPerson";
 import { useTimeTable } from "./hooks/useTimeTable";
-import { createRoot } from "react-dom/client";
+import { useEnableDuplicate } from "./hooks/useEnableDuplicate";
 
 import { ITimeSlot, ITimeTable } from "./interfaces/timeslots";
 
@@ -49,13 +49,16 @@ export function App() {
   );
 
   const [assigned, addAssigned, removeAssigned, setAssigned] =
-    useAssignedPerson(new Map<string, ITimeSlot>());
+    useAssignedPerson(new Map<string, ITimeSlot[]>());
 
   const [selectedPerson, setSelectedPerson] = useState<string>("");
 
+  const [enableDuplicate, setEnableDuplicatePersons, toggleEnableDuplicate] =
+    useEnableDuplicate(new Map<string, boolean>());
+
   function resetAssigned() {
     // resets the set of assigned persons
-    setAssigned(new Map<string, ITimeSlot>());
+    setAssigned(new Map<string, ITimeSlot[]>());
     setTimeTable(
       Array.from({ length: _getNRows(timeTableData) }, () =>
         Array.from({ length: _getNCols(timeTableData) }, () => [])
@@ -80,6 +83,7 @@ export function App() {
   function resetToDefaultTimeTableData() {
     // resets the time table data to the default one
     setTimeTableData(defaultTimeSlotData);
+    setEnableDuplicatePersons(defaultTimeSlotData.schema.persons);
     resetAssigned();
     setTimeTable(
       Array.from({ length: _getNRows(timeTableData) }, () =>
@@ -91,7 +95,8 @@ export function App() {
   function updateTimeTableData(timeTableData: ITimeTable) {
     // opens a file dialog and loads the selected file
     setTimeTableData(timeTableData);
-    setAssigned(new Map<string, ITimeSlot>());
+    setEnableDuplicatePersons(timeTableData.schema.persons);
+    setAssigned(new Map<string, ITimeSlot[]>());
     setTimeTable(
       Array.from({ length: _getNRows(timeTableData) }, () =>
         Array.from({ length: _getNCols(timeTableData) }, () => [])
@@ -154,6 +159,7 @@ export function App() {
             addPersonAt={addPersonAt}
             removePersonAt={removePersonAt}
             setSelectedPerson={setSelectedPerson}
+            enableDuplicate={enableDuplicate}
           ></TimeTable>
         </div>
 
@@ -175,8 +181,10 @@ export function App() {
             <PersonList
               persons={timeTableData.schema.persons}
               assigned={assigned}
+              enableDuplicate={enableDuplicate}
               selectedPerson={selectedPerson}
               setSelectedPerson={setSelectedPerson}
+              toggleEnableDuplicate={toggleEnableDuplicate}
             ></PersonList>
           </div>
         </div>
