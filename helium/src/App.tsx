@@ -67,16 +67,36 @@ export function App() {
   }
 
   function sortByAvailableTime() {
+    // first sort by whether duplication is enabled
+    const duplicateDisabled: string[] = [];
+    const duplicateEnabled: string[] = [];
+
+    enableDuplicate.forEach((value, key) => {
+      if (value) {
+        duplicateEnabled.push(key);
+      } else {
+        duplicateDisabled.push(key);
+      }
+    });
+
     // sort all candidates by the number of available time slots
-    const sorted = new Map<string, ITimeSlot[]>(
-      [...timeTableData.timeSlots.entries()].sort(
-        (a, b) => a[1].length - b[1].length
-      )
+    duplicateDisabled.sort(
+      (a, b) =>
+        timeTableData.timeSlots.get(a)!.length -
+        timeTableData.timeSlots.get(b)!.length
     );
-    const persons = Array.from(sorted.keys());
+
+    duplicateEnabled.sort(
+      (a, b) =>
+        timeTableData.timeSlots.get(a)!.length -
+        timeTableData.timeSlots.get(b)!.length
+    );
+
+    const sorted = [...duplicateDisabled, ...duplicateEnabled];
+
     setTimeTableData({
-      schema: { ...timeTableData.schema, persons: persons },
-      timeSlots: sorted,
+      schema: { ...timeTableData.schema, persons: sorted },
+      timeSlots: timeTableData.timeSlots,
     });
   }
 
