@@ -29,12 +29,15 @@ export function convertToOScopeCompatible(
   const res = [];
   for (let i = 0; i < rowHeaders.length; i++) {
     for (let j = 0; j < columnHeaders.length; j++) {
-      const dayTime = `${columnHeaders[j]}@${rowHeaders[i]}`;
+      const date = columnHeaders[j];
+      const time = rowHeaders[i];
+      // const dayTime = `${columnHeaders[j]}@${rowHeaders[i]}`;
       for (let k = 0; k < rowSubHeaders.length; k++) {
         const location = rowSubHeaders[k];
         const persons = Array.from(timeTable[i * rowSubHeaders.length + k][j]);
         res.push({
-          time: dayTime,
+          date: date,
+          time: time,
           location: location,
           attendees: persons,
         })
