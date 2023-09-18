@@ -169,6 +169,7 @@ export function TimeTable(props: {
                         assigned={assigned}
                         removeAssigned={removeAssigned}
                         removePersonAt={removePersonAt}
+                        enableDuplicate={enableDuplicate}
                       />
                     );
                   }

@@ -15,10 +15,26 @@ export function TableItem(props: {
 
   selectedPerson: string;
   setSelected: (person: string) => void;
+
+  enableDuplicate: Map<string, boolean>;
 }) {
   const { currentTimeSlot, persons, isAssignable, onCellClick } = props;
   const { assigned, removeAssigned, removePersonAt } = props;
   const { selectedPerson, setSelected } = props;
+  const { enableDuplicate } = props;
+
+  // sort persons by whether duplication is enabled
+  persons.sort((a, b) => {
+    const aEnabled = enableDuplicate.get(a) || false;
+    const bEnabled = enableDuplicate.get(b) || false;
+    if (aEnabled && !bEnabled) {
+      return 1;
+    } else if (!aEnabled && bEnabled) {
+      return -1;
+    } else {
+      return 0;
+    }
+  })
 
   const extraClassName = isAssignable ? "timetable--assignable" : "";
   return (
@@ -50,6 +66,7 @@ export function TableItem(props: {
             onClick={onEntryClick}
             onRemove={onEntryRemove}
             isSelected={isSelected}
+            enableDuplicate={enableDuplicate}
           />
         );
       })}

@@ -67,6 +67,10 @@
     border-left: 3px solid var(--blue-500);
   }
 
+  &--row-entry-duplicate {
+    color: var(--emerald-500);
+  }
+
   &--row-entry {
     // entry in table cell
     width: 100%;
