@@ -20,7 +20,6 @@ export function useAssignedPerson(init: Map<string, ITimeSlot[]>) {
       if (timeSlots) {
         const newTimeSlots = timeSlots.filter((ts) => ts.weekday !== timeSlot.weekday || ts.time !== timeSlot.time);
         newSet.set(person, newTimeSlots);
-        console.log(newSet);
       }
       return newSet;
     })

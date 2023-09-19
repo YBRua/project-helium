@@ -15,6 +15,7 @@ import { ControlPanelButton } from "./components/controlPanel/controlPanelButton
 
 import "./styles/index.css";
 import { convertToOScopeCompatible } from "./jsonio";
+import { IPersonEntry, useGroups } from "./hooks/useGroup";
 
 declare const window: any;
 
@@ -53,8 +54,17 @@ export function App() {
 
   const [selectedPerson, setSelectedPerson] = useState<string>("");
 
+  const defaultPersons = defaultTimeSlotData.schema.persons;
+  const defaultEnableDuplicate = defaultPersons.reduce(
+    (map, person) => map.set(person, false),
+    new Map<string, boolean>()
+  );
   const [enableDuplicate, setEnableDuplicatePersons, toggleEnableDuplicate] =
-    useEnableDuplicate(new Map<string, boolean>());
+    useEnableDuplicate(defaultEnableDuplicate);
+
+  const [groups, cycleGroups, unsetGroups] = useGroups(
+    new Map<String, number>()
+  );
 
   function resetAssigned() {
     // resets the set of assigned persons
@@ -180,6 +190,9 @@ export function App() {
             removePersonAt={removePersonAt}
             setSelectedPerson={setSelectedPerson}
             enableDuplicate={enableDuplicate}
+            groups={groups}
+            toggleGroups={cycleGroups}
+            unsetGroups={unsetGroups}
           ></TimeTable>
         </div>
 

@@ -1,4 +1,5 @@
 import React from "react";
+import { IPersonEntry } from "../../hooks/useGroup";
 
 export function TableItemEntry(props: {
   person: string;
@@ -6,20 +7,39 @@ export function TableItemEntry(props: {
   onRemove: () => void;
   isSelected: boolean;
   enableDuplicate: Map<string, boolean>;
+  group: number;
+  onToggleGroups: () => void;
 }) {
-  const isDuplicateEnabled = props.enableDuplicate.get(props.person) ?? false;
+  const {
+    person,
+    onClick,
+    onRemove,
+    isSelected,
+    enableDuplicate,
+    group,
+    onToggleGroups,
+  } = props;
 
-  let extraClassName = props.isSelected ? "timetable--row-entry-selected " : "";
+  const isDuplicateEnabled = enableDuplicate.get(person) ?? false;
+
+  let extraClassName = isSelected ? "timetable--row-entry-selected " : "";
   if (isDuplicateEnabled) {
     extraClassName += "timetable--row-entry-duplicate ";
   }
 
+  const groupClass = `timetable--row-entry-group-${group}`;
   return (
     <div className={"timetable--row-entry-container " + extraClassName}>
-      <div className="timetable--row-entry" onClick={() => props.onClick()}>
-        {props.person}
+      <div
+        className={"timetable--row-entry-group " + groupClass}
+        onClick={onToggleGroups}
+      >
+        ■ {group}
       </div>
-      <div className="timetable--row-entry-rm" onClick={() => props.onRemove()}>
+      <div className="timetable--row-entry" onClick={() => onClick()}>
+        {person}
+      </div>
+      <div className="timetable--row-entry-rm" onClick={() => onRemove()}>
         ❌
       </div>
     </div>

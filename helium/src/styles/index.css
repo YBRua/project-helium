@@ -20,10 +20,20 @@
 
   --red-100: #fee2e2;
   --red-200: #fecaca;
+  --red-500: #ef4444;
 
   --nimo-navbar-bg: #324157;
   --nimo-navbar-hover: #283446;
   --nimo-navbar-active: #1f2635;
+
+  --group-palette-1: #c7706b;
+  --group-palette-2: #c7b66b;
+  --group-palette-3: #93c76b;
+  --group-palette-4: #6bc787;
+  --group-palette-5: #6bc2c7;
+  --group-palette-6: #6b7cc7;
+  --group-palette-7: #9f6bc7;
+  --group-palette-8: #c76bab;
 
   --db: #dbdbdb;
 }

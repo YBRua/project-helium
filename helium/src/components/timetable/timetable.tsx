@@ -6,6 +6,7 @@ import { TableItem } from "./tableItem";
 import { ITimeSlot } from "../../interfaces/timeslots";
 
 import "../../styles/timetable.scss";
+import { IPersonEntry } from "../../hooks/useGroup";
 
 export function TimeTable(props: {
   columnHeaders: string[];
@@ -25,6 +26,10 @@ export function TimeTable(props: {
   setSelectedPerson: (person: string) => void;
 
   enableDuplicate: Map<string, boolean>;
+
+  groups: Map<String, number>;
+  toggleGroups: (person: IPersonEntry) => void;
+  unsetGroups: (person: IPersonEntry) => void;
 }) {
   const {
     columnHeaders,
@@ -38,6 +43,7 @@ export function TimeTable(props: {
   const { assigned, addAssigned, removeAssigned } = props;
   const { addPersonAt, removePersonAt } = props;
   const { setSelectedPerson: setSelected } = props;
+  const { groups, toggleGroups, unsetGroups } = props;
 
   const assignableTimeSlots = timeSlots.get(selectedPerson) || [];
 
@@ -136,6 +142,11 @@ export function TimeTable(props: {
                                 selectedPerson
                               );
                               removeAssigned(selectedPerson, slot);
+                              unsetGroups({
+                                name: selectedPerson,
+                                weekday: slot.weekday,
+                                time: slot.time,
+                              });
                             }
                           }
                         }
@@ -151,6 +162,13 @@ export function TimeTable(props: {
                           time: _getRowId(rowIdx, subRowIdx),
                         });
                         setSelected("");
+
+                        // assign group to the person
+                        toggleGroups({
+                          name: selectedPerson,
+                          weekday: colIdx,
+                          time: _getRowId(rowIdx, subRowIdx),
+                        });
                       }
                     };
 
@@ -170,6 +188,9 @@ export function TimeTable(props: {
                         removeAssigned={removeAssigned}
                         removePersonAt={removePersonAt}
                         enableDuplicate={enableDuplicate}
+                        groups={groups}
+                        toggleGroups={toggleGroups}
+                        unsetGroups={unsetGroups}
                       />
                     );
                   }

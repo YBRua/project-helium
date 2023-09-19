@@ -1,6 +1,7 @@
 import React from "react";
 import { ITimeSlot } from "../../interfaces/timeslots";
 import { TableItemEntry } from "./tableItemEntry";
+import { IPersonEntry } from "../../hooks/useGroup";
 
 export function TableItem(props: {
   currentTimeSlot: ITimeSlot;
@@ -17,11 +18,16 @@ export function TableItem(props: {
   setSelected: (person: string) => void;
 
   enableDuplicate: Map<string, boolean>;
+
+  groups: Map<String, number>;
+  toggleGroups: (person: IPersonEntry) => void;
+  unsetGroups: (person: IPersonEntry) => void;
 }) {
   const { currentTimeSlot, persons, isAssignable, onCellClick } = props;
   const { assigned, removeAssigned, removePersonAt } = props;
   const { selectedPerson, setSelected } = props;
   const { enableDuplicate } = props;
+  const { groups, toggleGroups, unsetGroups } = props;
 
   // sort persons by whether duplication is enabled
   persons.sort((a, b) => {
@@ -34,7 +40,7 @@ export function TableItem(props: {
     } else {
       return 0;
     }
-  })
+  });
 
   const extraClassName = isAssignable ? "timetable--assignable" : "";
   return (
@@ -55,6 +61,11 @@ export function TableItem(props: {
               person
             );
             removeAssigned(person, currentTimeSlot);
+            unsetGroups({
+              name: person,
+              weekday: currentTimeSlot.weekday,
+              time: currentTimeSlot.time,
+            });
             setSelected("");
           }
         };
@@ -67,6 +78,18 @@ export function TableItem(props: {
             onRemove={onEntryRemove}
             isSelected={isSelected}
             enableDuplicate={enableDuplicate}
+            group={
+              groups.get(
+                `${person}-${currentTimeSlot.weekday}-${currentTimeSlot.time}`
+              ) ?? 0
+            }
+            onToggleGroups={() => {
+              toggleGroups({
+                name: person,
+                weekday: currentTimeSlot.weekday,
+                time: currentTimeSlot.time,
+              });
+            }}
           />
         );
       })}
