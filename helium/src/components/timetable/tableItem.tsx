@@ -19,15 +19,16 @@ export function TableItem(props: {
 
   enableDuplicate: Map<string, boolean>;
 
-  groups: Map<String, number>;
-  toggleGroups: (person: IPersonEntry) => void;
+  groups: Map<string, number>;
+  groupId2Name: string[];
+  cycleGroups: (person: IPersonEntry, offset?: number) => void;
   unsetGroups: (person: IPersonEntry) => void;
 }) {
   const { currentTimeSlot, persons, isAssignable, onCellClick } = props;
   const { assigned, removeAssigned, removePersonAt } = props;
   const { selectedPerson, setSelected } = props;
   const { enableDuplicate } = props;
-  const { groups, toggleGroups, unsetGroups } = props;
+  const { groups, groupId2Name, cycleGroups, unsetGroups } = props;
 
   // sort persons by whether duplication is enabled
   persons.sort((a, b) => {
@@ -83,12 +84,23 @@ export function TableItem(props: {
                 `${person}-${currentTimeSlot.weekday}-${currentTimeSlot.time}`
               ) ?? 0
             }
-            onToggleGroups={() => {
-              toggleGroups({
+            groupId2Name={groupId2Name}
+            onGroupIncrement={() => {
+              cycleGroups({
                 name: person,
                 weekday: currentTimeSlot.weekday,
                 time: currentTimeSlot.time,
               });
+            }}
+            onGroupDecrement={() => {
+              cycleGroups(
+                {
+                  name: person,
+                  weekday: currentTimeSlot.weekday,
+                  time: currentTimeSlot.time,
+                },
+                -1
+              );
             }}
           />
         );

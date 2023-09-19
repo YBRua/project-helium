@@ -8,6 +8,7 @@ export interface ITimeTableSchema {
   rowHeaders: string[];
   rowSubHeaders: string[];
   persons: string[];
+  groups: string[];
 }
 
 export interface ITimeTable {

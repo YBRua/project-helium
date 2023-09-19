@@ -6,16 +6,16 @@ export interface IPersonEntry {
   time: number;
 }
 
-function personEntryToString(personEntry: IPersonEntry) {
+export function personEntryToString(personEntry: IPersonEntry) {
   return `${personEntry.name}-${personEntry.weekday}-${personEntry.time}`;
 }
 
-export function useGroups(init: Map<String, number>) {
+export function useGroups(init: Map<string, number>) {
   const maxGroupId: number = 9;
 
   const [groups, setGroupsData] = useState(init);
 
-  const cycleGroups = (personEntry: IPersonEntry) => {
+  const cycleGroups = (personEntry: IPersonEntry, offset: number = 1) => {
     const personEntryString = personEntryToString(personEntry);
     setGroupsData((prev) => {
       const newGroups = new Map(prev);
@@ -24,7 +24,7 @@ export function useGroups(init: Map<String, number>) {
       if (groupId === undefined) {
         newGroups.set(personEntryString, 0);
       } else {
-        newGroups.set(personEntryString, (groupId + 1) % maxGroupId);
+        newGroups.set(personEntryString, (groupId + offset) % maxGroupId);
       }
       return newGroups;
     })
@@ -43,5 +43,6 @@ export function useGroups(init: Map<String, number>) {
     groups,
     cycleGroups,
     unsetGroups,
+    setGroupsData,
   ] as const;
 }

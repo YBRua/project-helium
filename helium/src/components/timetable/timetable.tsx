@@ -27,8 +27,9 @@ export function TimeTable(props: {
 
   enableDuplicate: Map<string, boolean>;
 
-  groups: Map<String, number>;
-  toggleGroups: (person: IPersonEntry) => void;
+  groups: Map<string, number>;
+  groupId2Name: string[];
+  cycleGroups: (person: IPersonEntry, offset?: number) => void;
   unsetGroups: (person: IPersonEntry) => void;
 }) {
   const {
@@ -43,7 +44,7 @@ export function TimeTable(props: {
   const { assigned, addAssigned, removeAssigned } = props;
   const { addPersonAt, removePersonAt } = props;
   const { setSelectedPerson: setSelected } = props;
-  const { groups, toggleGroups, unsetGroups } = props;
+  const { groups, groupId2Name, cycleGroups, unsetGroups } = props;
 
   const assignableTimeSlots = timeSlots.get(selectedPerson) || [];
 
@@ -164,7 +165,7 @@ export function TimeTable(props: {
                         setSelected("");
 
                         // assign group to the person
-                        toggleGroups({
+                        cycleGroups({
                           name: selectedPerson,
                           weekday: colIdx,
                           time: _getRowId(rowIdx, subRowIdx),
@@ -189,7 +190,8 @@ export function TimeTable(props: {
                         removePersonAt={removePersonAt}
                         enableDuplicate={enableDuplicate}
                         groups={groups}
-                        toggleGroups={toggleGroups}
+                        groupId2Name={groupId2Name}
+                        cycleGroups={cycleGroups}
                         unsetGroups={unsetGroups}
                       />
                     );

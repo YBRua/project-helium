@@ -16,20 +16,9 @@ import { ControlPanelButton } from "./components/controlPanel/controlPanelButton
 import "./styles/index.css";
 import { convertToOScopeCompatible } from "./jsonio";
 import { IPersonEntry, useGroups } from "./hooks/useGroup";
+import { getDefaultTimeTable } from "./jsonio";
 
 declare const window: any;
-
-function getDefaultTimeTable(): ITimeTable {
-  return {
-    schema: {
-      columnHeaders: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
-      rowHeaders: ["14:00-16:00", "16:00-18:00", "18:00-20:00"],
-      rowSubHeaders: ["值班", "报修"],
-      persons: ["点击“导入”加载 JSON 时间表"],
-    },
-    timeSlots: new Map([["点击“导入”加载 JSON 时间表", []]]),
-  };
-}
 
 const defaultTimeSlotData: ITimeTable = getDefaultTimeTable();
 
@@ -62,13 +51,14 @@ export function App() {
   const [enableDuplicate, setEnableDuplicatePersons, toggleEnableDuplicate] =
     useEnableDuplicate(defaultEnableDuplicate);
 
-  const [groups, cycleGroups, unsetGroups] = useGroups(
-    new Map<String, number>()
+  const [groups, cycleGroups, unsetGroups, setGroupsData] = useGroups(
+    new Map<string, number>()
   );
 
   function resetAssigned() {
     // resets the set of assigned persons
     setAssigned(new Map<string, ITimeSlot[]>());
+    setGroupsData(new Map<string, number>());
     setTimeTable(
       Array.from({ length: _getNRows(timeTableData) }, () =>
         Array.from({ length: _getNCols(timeTableData) }, () => [])
@@ -114,6 +104,7 @@ export function App() {
     // resets the time table data to the default one
     setTimeTableData(defaultTimeSlotData);
     setEnableDuplicatePersons(defaultTimeSlotData.schema.persons);
+    setGroupsData(new Map<string, number>())
     resetAssigned();
     setTimeTable(
       Array.from({ length: _getNRows(timeTableData) }, () =>
@@ -127,6 +118,7 @@ export function App() {
     setTimeTableData(timeTableData);
     setEnableDuplicatePersons(timeTableData.schema.persons);
     setAssigned(new Map<string, ITimeSlot[]>());
+    setGroupsData(new Map<string, number>());
     setTimeTable(
       Array.from({ length: _getNRows(timeTableData) }, () =>
         Array.from({ length: _getNCols(timeTableData) }, () => [])
@@ -137,7 +129,7 @@ export function App() {
   function saveTimeTableToJson() {
     // saves timeTable to json
     const json = JSON.stringify(
-      convertToOScopeCompatible(timeTableData.schema, timeTable)
+      convertToOScopeCompatible(timeTableData.schema, timeTable, groups)
     );
     const blob = new Blob([json], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -191,7 +183,8 @@ export function App() {
             setSelectedPerson={setSelectedPerson}
             enableDuplicate={enableDuplicate}
             groups={groups}
-            toggleGroups={cycleGroups}
+            groupId2Name={timeTableData.schema.groups}
+            cycleGroups={cycleGroups}
             unsetGroups={unsetGroups}
           ></TimeTable>
         </div>

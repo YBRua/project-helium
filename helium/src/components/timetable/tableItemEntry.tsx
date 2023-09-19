@@ -8,7 +8,9 @@ export function TableItemEntry(props: {
   isSelected: boolean;
   enableDuplicate: Map<string, boolean>;
   group: number;
-  onToggleGroups: () => void;
+  groupId2Name: string[];
+  onGroupIncrement: () => void;
+  onGroupDecrement: () => void;
 }) {
   const {
     person,
@@ -17,7 +19,9 @@ export function TableItemEntry(props: {
     isSelected,
     enableDuplicate,
     group,
-    onToggleGroups,
+    groupId2Name,
+    onGroupIncrement,
+    onGroupDecrement,
   } = props;
 
   const isDuplicateEnabled = enableDuplicate.get(person) ?? false;
@@ -32,9 +36,13 @@ export function TableItemEntry(props: {
     <div className={"timetable--row-entry-container " + extraClassName}>
       <div
         className={"timetable--row-entry-group " + groupClass}
-        onClick={onToggleGroups}
+        onClick={onGroupIncrement}
+        onContextMenu={(e) => {
+          e.preventDefault();
+          onGroupDecrement();
+        }}
       >
-        ■ {group}
+        ■ {groupId2Name[group]}
       </div>
       <div className="timetable--row-entry" onClick={() => onClick()}>
         {person}
