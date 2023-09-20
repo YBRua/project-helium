@@ -24,7 +24,12 @@ export function useGroups(init: Map<string, number>) {
       if (groupId === undefined) {
         newGroups.set(personEntryString, 0);
       } else {
-        newGroups.set(personEntryString, (groupId + offset) % maxGroupId);
+        const nextId = groupId + offset;
+        if (nextId < 0) {
+          newGroups.set(personEntryString, maxGroupId - 1);
+        } else {
+          newGroups.set(personEntryString, (groupId + offset) % maxGroupId);
+        }
       }
       return newGroups;
     })
